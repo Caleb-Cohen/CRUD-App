@@ -1,4 +1,5 @@
 //Declare variables
+const { response } = require('express');
 const express = require(`express`)
 const app = express()
 const PORT = 8500;
@@ -17,6 +18,10 @@ mongoose.connect(process.env.DB_CONNECTION,
     () => {console.log(`Connected to db!`)}
     )
 
+    let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
+//GET METHOD
     app.get("/", async (req, res) => {
         try {
             TodoTask.find({}, (err, tasks) => {
@@ -26,6 +31,23 @@ mongoose.connect(process.env.DB_CONNECTION,
             if (err) return res.status(500).send(err);
         }
     });
+//POST
+    app.post('/', async (req,res) => {
+        const todoTask = new TodoTask(
+            {
+                title: req.body.title,
+                content: req.body.content
+            }
+        )
+        try {
+            await todoTask.save()
+            console.log(todoTask)
+            res.redirect('/')
+        } catch(err) {
+            if (err) return res.status(500).send
+            res.redirect('/')
+        }
+    })
 
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`))
