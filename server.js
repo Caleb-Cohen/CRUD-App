@@ -87,4 +87,4 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 
 
-app.listen(PORT, () => console.log(`Server is running on ${PORT}`))
+app.listen(process.env.PORT || 8500)
